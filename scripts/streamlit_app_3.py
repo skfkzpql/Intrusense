@@ -29,9 +29,15 @@ if page == "메인 페이지":
 
     # 프로젝트 개요 탭
     with tabs[0]:
-        st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
-        st.info("네트워크 트래픽 기반 침입 탐지 모델을 만들자")
-        st.info("정확도 99프로이상에 모델을 만들어보자")
+        st.subheader('프로젝트 개요')
+        st.info('사이버 보안 위협이 점점 더 복잡하고 정교해짐에 따라, 효율적이고 신뢰성 있는 침입 탐지 시스템의 필요성이 강조되고 있습니다. 이에 우리 팀은 다양한 사이버 공격 유형을 포함한 현실적인 네트워크 데이터셋을 활용하여, 실제 환경에서도 높은 정확도를 보이는 머신러닝 딥러닝 기반의 침입 탐지 모델을 구축하고자 합니다.')
+        st.subheader("전통적 탐지기법말고 ai를 왜 활용해야할까?")
+        st.info("실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세이기때문입니다.")
+    # 이미지 삽입
+        st.image("C:/Users/thsbd/py/Intrusense/Intrusense/results/figures/column_visualizations/정보통신 이유.png", caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)", use_container_width=True)
+        st.subheader("목적 및 목표 ")
+        st.info("네트워크 트래픽 기반 침입 탐지 모델을 만들기")
+        st.info("정확도 99프로이상에 모델을 만들기")
 
         st.markdown("<h4>데이터</h4>", unsafe_allow_html=True)
         st.markdown("""<span style="background-color: grey; text-decoration: underline; font-weight: bold;">CIC-IDS 2017</span>""", unsafe_allow_html=True)
@@ -39,6 +45,62 @@ if page == "메인 페이지":
         st.write("CIC(Canadian Institute for Cybersecurity)은 사이버 공격 유형을 포함한 데이터셋을 제공하여 보안 연구와 머신러닝 모델 개발에 활용되기떄문에 데이터에 신뢰도가 높습니다.")
         st.write("현실적인 데이터 구조 CIC 데이터셋은 현실적인 네트워크 환경에서 생성된 데이터이기 때문에, 학습 모델이 실제 네트워크 환경에서도 성능을 낼 수 있도록 돕습니다.")
         st.write('단일 유형의 공격만 포함된 데이터셋과는 달리, CIC 데이터셋은 여러 공격 유형을 포함하고 있어 다양한 연구와 실험이 가능합니다.')
+        st.markdown("""
+
+        #### **사용 데이터셋**
+        - **CIC-IDS2017**: Canadian Institute for Cybersecurity에서 제공하는 데이터셋.
+        - **데이터 저장 방식**: MySQL 데이터베이스.
+        - **데이터 규모**: 78개의 피처, 1개의 타겟 레이블, 총 225,745개의 행(Row).
+        #### **데이터 설명 및 데이터 차용 이유**
+
+        #### **피처 종류**
+        - **포트 및 트래픽량**
+        - **패킷 길이**
+        - **플래그 및 헤더**
+        - **속도 및 비율**
+        - **세그먼트 및 하위 플로우**
+
+        #### 알고 가면 좋은정보 3가지
+        1. 패킷(Packet): 네트워크를 통해 전송되는 데이터의 단위입니다. 네트워크 패킷은 보통 헤더(송수신자 정보, 프로토콜 등의 메타 데이터 포함)와 페이로드(실제 전송할 데이터)를 포함합니다.
+        2. IAT (Inter-Arrival Time): 연속적인 패킷들 사이의 도착 시간 간격입니다. IAT는 네트워크 트래픽의 패턴을 분석할 때 사용되며, 예를 들어 DDoS 공격과 같은 비정상적인 트래픽 플로우를 감지하는데 도움을 줍니다.
+        3. 길이(Length): 패킷의 크기를 의미하며, 보통 바이트 단위로 측정됩니다. 패킷의 길이는 네트워크의 부하, 전송 속도, 그리고 사용된 프로토콜에 대한 정보를 제공할 수 있습니다.
+
+
+        #### **대표 공격 5가지**
+        1. **DDoS**: 분산 서비스 거부 공격.
+        2. **PortScan**: 네트워크 포트를 스캔하여 취약점을 탐색하는 공격.
+        3. **Bot**: 악성 봇에 감염된 장치의 네트워크 활동.
+        4. **Web Attack  SQL Injection**: SQL 문법을 악용한 데이터베이스 공격.
+        5. **Heartbleed**: OpenSSL 취약점을 악용해 민감 정보를 유출하는 공격.
+
+        #### **주요 칼럼**
+        - **Flow Duration**: 흐름의 지속 시간. 공격과 정상 트래픽의 차이를 분석할 수 있는 중요한 지표.
+        - **Total Fwd Packets**, **Total Backward Packets**: 전송 및 수신된 총 패킷 수. 예) DDoS 공격 시 패킷 수 급증.
+        - **Flow Bytes/s**, **Flow Packets/s**: 초당 바이트 및 패킷 수. 이상 트래픽에서 값이 급격히 변할 가능성이 큼.
+        - **Flow IAT Mean**, **Flow IAT Std**: 트래픽의 시간 간격. 공격 시 간격의 일정치 않음이 나타날 수 있음.
+        - **Fwd Packet Length Max**, **Fwd Packet Length Mean**: 순방향 패킷의 최대 및 평균 길이.
+        - **Bwd Packet Length Max**, **Bwd Packet Length Mean**: 역방향 패킷의 최대 및 평균 길이.
+        - **PSH Flags Count**, **URG Flags Count**: 푸시(PSH)와 긴급(URG) 플래그가 설정된 패킷 수.
+        - **SYN Flag Count**, **FIN Flag Count**, **RST Flag Count**: 연결 요청 및 종료 관련 플래그. 공격 탐지에 활용 가능.
+        - **Label**: 각 트래픽의 레이블(정상/공격 유형).
+
+        #### **타겟 레이블**
+        - **BENIGN**: 정상 트래픽.
+        - **DDoS**: 분산 서비스 거부(Distributed Denial of Service) 공격.
+        - **PortScan**: 네트워크 포트 스캔 공격.
+        - **Bot**: 악성 봇 활동.
+        - **Infiltration**: 네트워크 침투 및 권한 탈취.
+        - **Web Attack  Brute Force**: 무차별 대입 공격.
+        - **Web Attack  XSS**: 크로스 사이트 스크립팅.
+        - **Web Attack  SQL Injection**: SQL 문법을 이용한 공격.
+        - **FTP-Patator**: FTP 서버 대상 무차별 대입 공격.
+        - **SSH-Patator**: SSH 서버 대상 무차별 대입 공격.
+        - **DoS slowloris**: HTTP 연결 점유로 서비스 장애 유발.
+        - **DoS Slowhttptest**: HTTP 헤더 기반 DoS 공격.
+        - **DoS Hulk**: 서버 부하 초래 DoS 공격.
+        - **DoS GoldenEye**: HTTP GET 요청 남발로 서버 마비.
+        - **Heartbleed**: OpenSSL 취약점 악용 공격.
+    """)
     # 데이터셋 요약 탭
     with tabs[1]:
         
@@ -167,17 +229,24 @@ elif page == "모델":
 
 # 보고서
 else:
-    
     st.markdown("<h4>보고서</h4>", unsafe_allow_html=True)
-    
+
     # 서브탭 설정
     report_tabs = st.tabs(["논의점 및 미래 작업"])
 
+    # 첫 번째 서브탭 내용
     with report_tabs[0]:
-        st.markdown("<h4>논의점</h4>", unsafe_allow_html=True)
-        st.write("특정 소수 클래스(10개 이하의 칼럼)의 경우 표본 수가 너무 적어 패턴을 분석하기에는 데이터가 부족할 수 있다.")
-        st.write("데이터의 편차가 큰 특징때문에 Ddos쪽으로 군집되어 web attack과 sql attack 같은 공격에취약하다")
-        st.write('공격을 당했을때 ddos 공격 보다 web attack 이나 database 쪽이 피해를 입었을떄 더 큰 피해를 보기에 적은 표본이더라도 주의를 해야한다')
-        st.write('xgboost도 좋은 성능을 보였지만 여기에 시계열 데이터를 추가하는것역시 고려 해봐야할거같다')
-        st.markdown("<h4>미래 작업</h4>", unsafe_allow_html=True)
-        st.write("향후 계획을 작성합니다.")
+        st.subheader("추후 논의점")
+        st.markdown("""
+        - **소수 클래스의 표본 부족**: 특정 소수 클래스(10개 이하의 데이터)의 경우, 표본 수가 너무 적어 패턴 분석에 어려움이 있었습니다.
+        - **데이터 편차로 인한 모델 편향**: 데이터의 편차로 인해 DDoS 쪽에 모델이 편향되어 Web Attack 및 SQL Attack과 같은 공격에 상대적으로 약한 성능을 보였습니다.
+        - **공격 유형별 피해 정도**: DDoS 공격보다 Web Attack이나 Database 관련 공격이 더 큰 피해를 유발할 수 있습니다. 따라서, 적은 표본이더라도 이러한 공격 유형에 대한 분석을 강화해야 합니다.
+        - **시계열 데이터 추가**: 시계열 데이터를 추가하여, 모델의 성능 및 이상 탐지 능력을 개선할 필요가 있습니다.
+        """)
+
+        st.subheader("회고 및 개선점")
+        st.markdown("""
+        - **아쉬웠던 점**: 2017년과 2018년의 데이터셋이 제공되었지만, 칼럼 구조의 차이로 인해 2018년 데이터를 검증용 데이터셋으로 활용할 수 없었습니다.
+        - **배운 점**: 팀원들과 함께 작업하면서 많은 것을 배웠습니다. 예를 들어, 동일한 데이터셋을 사용했음에도 불구하고 수치 차이가 발생하는 문제를 발견하고 해결하면서 데이터의 일관성을 유지하는 방법을 학습했습니다.
+        - **협업의 중요성**: Git을 활용한 협업을 통해 팀원 간 소통과 배려의 중요성을 깨달았습니다. 서로의 작업 내용을 공유하며 프로젝트를 성공적으로 진행할 수 있었습니다.
+        """)
