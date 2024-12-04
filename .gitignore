@@ -1,5 +1,5 @@
 # 환경 변수 파일
 .env
 data/
-results/figures/column_visualizations/
+results/figures/
 results/models/
