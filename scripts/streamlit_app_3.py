@@ -50,10 +50,10 @@ if page == "메인 페이지":
         import pandas as pd
 
         sample_data = pd.DataFrame({
-            "Destination Port": [80, 443, 22, 21], # 목적지 포트
-            "Flow Duration": [12345, 67890, 23456, 98765], # 플로우 지속 시간
-            "Packet Length Mean": [50.5, 60.2, 45.3, 75.1], # 패킷 길이 평균
-            "IAT Mean": [12.1, 8.7, 15.6, 9.8], # IAT 평균
+            "Destination Port": [0, 0, 0, 0], # 목적지 포트
+            "Flow Duration": [0, 0, 0, 0], # 플로우 지속 시간
+            "Packet Length Mean": [0, 0, 0, 0], # 패킷 길이 평균
+            "IAT Mean": [0, 0, 0, 0], # IAT 평균
             "Label": ["정상(Benign)", "DDoS", "Web Attack", "SQL Injection"] #레이블
         })
 
@@ -73,9 +73,9 @@ if page == "메인 페이지":
         # 변수 유효/누락 데이터 통계 요약
         variable_stats = pd.DataFrame({
             "Variable": ["Destination Port", "Flow Duration", "Packet Length Mean", "IAT Mean", "Label"], # 변수
-            "Valid Data Count": [10000, 9998, 9990, 9985, 10000], # 유효 데이터 수
-            "Missing Data Count": [0, 2, 10, 15, 0], # 누락 데이터 수 
-            "Missing Data Percentage (%)": [0.0, 0.02, 0.1, 0.15, 0.0] # 누락 데이터 비율(%)
+            "Valid Data Count": [0, 0, 0, 0], # 유효 데이터 수
+            "Missing Data Count": [0, 0, 0, 0], # 누락 데이터 수 
+            "Missing Data Percentage (%)": [0, 0, 0, 0] # 누락 데이터 비율(%)
         })
 
         st.table(variable_stats)
