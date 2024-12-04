@@ -1,8 +1,9 @@
 import os
 import pandas as pd
 from sqlalchemy import create_engine, inspect, text
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, messagebox
 import numpy as np
+import csv
 
 def select_files():
     """
@@ -41,11 +42,8 @@ def create_table(engine, table_name, columns):
         # 칼럼 이름에 백틱 추가
         column_name = f"`{column}`"
         
-        # FileName은 VARCHAR로 설정
-        if column == 'FileName':
-            column_definitions.append(f"{column_name} VARCHAR(255)")
-        # Label, source는 INT로 설정
-        elif column == 'Label':
+        # Label INT로 설정
+        if column == 'Label':
             column_definitions.append(f"{column_name} INT")
         # 나머지 숫자형 데이터는 FLOAT로 설정
         else:
@@ -67,21 +65,40 @@ def create_table(engine, table_name, columns):
 
 def check_and_drop_table(engine, table_name, columns):
     """
-    테이블이 이미 존재하는 경우, 삭제 여부를 사용자에게 묻고 처리합니다.
+    테이블이 이미 존재하는 경우, 하나의 창을 통해 사용자에게 묻고 처리합니다.
     """
     inspector = inspect(engine)
+
     if table_name in inspector.get_table_names():
-        user_input = input(f"경고: '{table_name}' 테이블이 이미 존재합니다. 테이블을 삭제하고 데이터 삽입을 시작할까요? (y/n): ")
-        if user_input.lower() == 'y':
+        # Tkinter GUI 설정
+        root = Tk()
+        root.withdraw()  # 기본 창 숨김
+        root.attributes('-topmost', True)  # 창을 최상단에 표시
+
+        # 메시지박스를 통해 하나의 선택 창 생성
+        choice = messagebox.askyesnocancel(
+            "테이블 처리 확인",
+            f"'{table_name}' 테이블이 이미 존재합니다.\n"
+            "테이블을 삭제하고 새로 생성하시겠습니까? (Yes)\n"
+            "기존 테이블에 데이터를 추가하시겠습니까? (No)\n"
+            "작업을 종료하시겠습니까? (Cancel)",
+            icon='warning'
+        )
+
+        if choice is None:  # Cancel 버튼 클릭 시
+            messagebox.showinfo("작업 종료", "작업을 종료합니다.")
+            print("작업을 종료합니다.")
+            root.destroy()
+            exit()
+        elif choice:  # Yes 버튼 클릭 시 (테이블 삭제 및 재생성)
             with engine.connect() as connection:
                 connection.execute(text(f"DROP TABLE IF EXISTS {table_name}"))
             print(f"'{table_name}' 테이블이 삭제되었습니다.")
             create_table(engine, table_name, columns)
-        else:
-            user_input = input(f"기존 테이블에 데이터를 추가할까요? (y/n): ")
-            if user_input.lower() != 'y':
-                print("작업을 종료합니다.")
-                exit()
+        else:  # No 버튼 클릭 시 (기존 테이블에 데이터 추가)
+            print(f"기존 테이블 '{table_name}'에 데이터를 추가합니다.")
+
+        root.destroy()  # Tk 객체 종료
 
 def save_label_mapping(engine, label_mapping, table_name):
     """
@@ -128,3 +145,46 @@ def process_and_save_csv_to_db(engine, data_files, columns, table_name, source_t
     # 파일 정보 저장
     source_df.to_sql(source_table_name, con=engine, if_exists='replace', index=False)
     print(f"파일 정보가 '{source_table_name}' 테이블에 저장되었습니다.")
+
+def run_sql_and_save_to_csv(engine, query, output_csv_path):
+    """
+    SQL 쿼리를 실행하고 결과를 바로 CSV 파일로 저장합니다.
+    """
+    with engine.connect() as connection:
+        result = connection.execute(text(query))
+        # 헤더와 데이터를 분리
+        columns = result.keys()
+        data = result.fetchall()
+
+    # CSV 파일로 저장
+    with open(output_csv_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(columns)  # 헤더 작성
+        writer.writerows(data)    # 데이터 작성
+
+    print(f"SQL 실행 결과가 '{output_csv_path}'에 저장되었습니다.")
+
+def get_tables(engine):
+    """
+    모든 테이블 목록을 반환합니다.
+    """
+    # 데이터베이스 메타데이터를 조회하기 위해 inspector 생성
+    inspector = inspect(engine)
+
+    # 테이블 이름 목록을 반환
+    return inspector.get_table_names()
+
+
+def get_table_data(engine, table_name, limit=20):
+    """
+    주어진 테이블의 데이터를 불러오는 함수입니다.
+    데이터를 20개로 제한하여 불러옵니다 (기본값은 20개).
+    """
+    # SQL 쿼리 작성: 테이블에서 데이터를 최대 limit 개까지 가져옴
+    query = f"SELECT * FROM {table_name} LIMIT {limit}"
+
+    # SQL 쿼리 실행 결과를 DataFrame으로 반환
+    return pd.read_sql(query, engine)
+
+
+
