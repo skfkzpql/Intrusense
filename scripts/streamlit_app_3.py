@@ -12,7 +12,7 @@ page = st.sidebar.radio("", ["메인 페이지", "데이터 분석 및 탐색", 
 
 # 메인 페이지
 if page == "메인 페이지":
-    st.subheader("프로젝트의 목적 및 팀명 의미")
+    st.markdown("<h4>프로젝트의 목적 및 팀명 의미</h4>", unsafe_allow_html=True)
     # 팀명 소개
     st.markdown("""
     - **팀명**: Intrusense
@@ -29,13 +29,13 @@ if page == "메인 페이지":
 
     # 프로젝트 개요 탭
     with tabs[0]:
-        st.subheader("목적 및 목표 ")
+        st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("네트워크 트래픽 기반 침입 탐지 모델을 만들자")
         st.info("정확도 99프로이상에 모델을 만들어보자")
 
-        st.subheader("데이터")
-        st.write("CIC-IDS 2017")
-        st.subheader("데이터 설명 및 데이터 차용이유")
+        st.markdown("<h4>데이터</h4>", unsafe_allow_html=True)
+        st.markdown("""<span style="background-color: grey; text-decoration: underline; font-weight: bold;">CIC-IDS 2017</span>""", unsafe_allow_html=True)
+        st.markdown("<h4>데이터 설명 및 차용 이유</h4>", unsafe_allow_html=True)
         st.write("CIC(Canadian Institute for Cybersecurity)은 사이버 공격 유형을 포함한 데이터셋을 제공하여 보안 연구와 머신러닝 모델 개발에 활용되기떄문에 데이터에 신뢰도가 높습니다.")
         st.write("현실적인 데이터 구조 CIC 데이터셋은 현실적인 네트워크 환경에서 생성된 데이터이기 때문에, 학습 모델이 실제 네트워크 환경에서도 성능을 낼 수 있도록 돕습니다.")
         st.write('단일 유형의 공격만 포함된 데이터셋과는 달리, CIC 데이터셋은 여러 공격 유형을 포함하고 있어 다양한 연구와 실험이 가능합니다.')
@@ -43,7 +43,7 @@ if page == "메인 페이지":
     with tabs[1]:
         
         # 샘플 데이터
-        st.subheader("샘플 데이터")
+        st.markdown("<h4>샘플데이터</h4>", unsafe_allow_html=True)
         st.write("네트워크 트래픽 데이터셋의 샘플 데이터  \n주요 변수와 레이블(Label)을 포함하며, 침입 탐지 모델의 학습에 사용")
 
         # 샘플 데이터 정의
@@ -67,7 +67,7 @@ if page == "메인 페이지":
         st.write("공격 유형(Label)이 정상이 아닌 경우 하이라이트되며, 이 데이터는 `Destination Port`, `Flow Duration`, `Packet Length Mean`, `IAT Mean`와 같은 주요 변수로 구성됨.")
 
 
-        st.subheader("변수 설명")
+        st.markdown("<h4>변수 설명</h4>", unsafe_allow_html=True)
         st.write("네트워크 트래픽 데이터셋에서 각 변수의 유효 데이터 수와 누락 데이터를 요약한 통계")
 
         # 변수 유효/누락 데이터 통계 요약
@@ -85,12 +85,14 @@ if page == "메인 페이지":
 
     # 전체 워크플로 다이어그램 탭
     with tabs[2]:
-        st.subheader("단계별 프로세스")
+        st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
         st.plotly_chart(go.Figure(), use_container_width=True)
 
 # 데이터 분석 및 탐색
 elif page == "데이터 분석 및 탐색":
-
+    
+    st.markdown("<h4>데이터 분석 및 탐색</h4>", unsafe_allow_html=True)
+    
     # 서브탭 설정
     analysis_tabs = st.tabs(["데이터 분포 및 변수별 요약 통계", "데이터 탐색", "데이터 전처리 및 준비"])
 
@@ -134,6 +136,8 @@ elif page == "데이터 분석 및 탐색":
 
 # 모델
 elif page == "모델":
+    
+    st.markdown("<h4>모델</h4>", unsafe_allow_html=True)
 
     # 서브탭 설정
     model_tabs = st.tabs(["모델 성능 비교", "최종 모델"])
@@ -151,15 +155,17 @@ elif page == "모델":
 
 # 보고서
 else:
- 
+    
+    st.markdown("<h4>보고서</h4>", unsafe_allow_html=True)
+    
     # 서브탭 설정
     report_tabs = st.tabs(["논의점 및 미래 작업"])
 
     with report_tabs[0]:
-        st.subheader("논의점")
+        st.markdown("<h4>논의점</h4>", unsafe_allow_html=True)
         st.write("특정 소수 클래스(10개 이하의 칼럼)의 경우 표본 수가 너무 적어 패턴을 분석하기에는 데이터가 부족할 수 있다.")
         st.write("데이터의 편차가 큰 특징때문에 Ddos쪽으로 군집되어 web attack과 sql attack 같은 공격에취약하다")
         st.write('공격을 당했을때 ddos 공격 보다 web attack 이나 database 쪽이 피해를 입었을떄 더 큰 피해를 보기에 적은 표본이더라도 주의를 해야한다')
         st.write('xgboost도 좋은 성능을 보였지만 여기에 시계열 데이터를 추가하는것역시 고려 해봐야할거같다')
-        st.subheader("미래 작업")
+        st.markdown("<h4>미래 작업</h4>", unsafe_allow_html=True)
         st.write("향후 계획을 작성합니다.")
