@@ -1,5 +1,20 @@
+import os
+import re
 import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 import plotly.graph_objects as go
+from matplotlib import font_manager, rc
+
+# 한글 폰트 경로 설정
+font_path = r"C:\Windows\Fonts\batang.ttc" 
+font_name = font_manager.FontProperties(fname=font_path).get_name()
+rc('font', family=font_name)
+
+# 한글 폰트 적용 확인
+print(f"설정된 폰트: {font_name}")
 
 # 메인 페이지
 st.title("Intrusense")
@@ -186,42 +201,227 @@ with pages[1]:
         analysis_radio = st.radio("데이터 분석 옵션 선택", [
             "포트 및 트래픽량 관련", "패킷 길이 관련", "플래그 및 헤더 관련",
             "속도 및 비율 관련", "세그먼트 및 하위 플로우 관련",
-            "시간 관련", "윈도우 크기 및 기타", "레이블"
+            "시간 관련", "윈도우 크기 및 기타", "활동 및 휴면 시간 관련", "레이블"
         ])
-        st.write(f"{analysis_radio}에 대한 히스토그램 및 박스플롯을 여기에 표시합니다.")
+
+        columns_dict = {
+            "포트 및 트래픽량 관련": [
+                "Flow Duration",  # 주요 칼럼
+                "Total Fwd Packets",  # 주요 칼럼
+                "Total Backward Packets",  # 주요 칼럼
+                "Flow Bytes/s",  # 주요 칼럼
+                "Flow Packets/s",  # 주요 칼럼
+                "Destination Port"],
+            "패킷 길이 관련": [
+                "Fwd Packet Length Max",  # 주요 칼럼
+                "Fwd Packet Length Mean",  # 주요 칼럼
+                "Bwd Packet Length Max",  # 주요 칼럼
+                "Bwd Packet Length Mean",  # 주요 칼럼
+                "Total Length of Fwd Packets",
+                "Total Length of Bwd Packets",
+                "Fwd Packet Length Min",
+                "Fwd Packet Length Std",
+                "Bwd Packet Length Min",
+                "Bwd Packet Length Std",
+                "Min Packet Length",
+                "Max Packet Length",
+                "Packet Length Mean",
+                "Packet Length Std",
+                "Packet Length Variance"],
+            "플래그 및 헤더 관련": [
+                "PSH Flag Count",  # 주요 칼럼
+                "URG Flag Count",  # 주요 칼럼
+                "SYN Flag Count",  # 주요 칼럼
+                "FIN Flag Count",  # 주요 칼럼
+                "RST Flag Count",  # 주요 칼럼
+                "Fwd PSH Flags",
+                "Bwd PSH Flags",
+                "Fwd URG Flags",
+                "Bwd URG Flags",
+                "Fwd Header Length",
+                "Bwd Header Length",
+                "Fwd Header Length.1",
+                "ACK Flag Count",
+                "CWE Flag Count",
+                "ECE Flag Count"],
+            "속도 및 비율 관련": [
+                "Flow Bytes/s",  
+                "Flow Packets/s",  
+                "Down/Up Ratio",
+                "Average Packet Size",
+                "Fwd Avg Bytes/Bulk",
+                "Fwd Avg Packets/Bulk",
+                "Fwd Avg Bulk Rate",
+                "Bwd Avg Bytes/Bulk",
+                "Bwd Avg Packets/Bulk",
+                "Bwd Avg Bulk Rate"],
+            "세그먼트 및 하위 플로우 관련": [
+                "Avg Fwd Segment Size",
+                "Avg Bwd Segment Size",
+                "Subflow Fwd Packets",
+                "Subflow Fwd Bytes",
+                "Subflow Bwd Packets",
+                "Subflow Bwd Bytes"],
+            "시간 관련": [
+                "Flow IAT Mean",  # 주요 칼럼
+                "Flow IAT Std",  # 주요 칼럼
+                "Flow IAT Max",
+                "Flow IAT Min",
+                "Fwd IAT Total",
+                "Fwd IAT Mean",
+                "Fwd IAT Std",
+                "Fwd IAT Max",
+                "Fwd IAT Min",
+                "Bwd IAT Total",
+                "Bwd IAT Mean",
+                "Bwd IAT Std",
+                "Bwd IAT Max",
+                "Bwd IAT Min"],
+            "윈도우 크기 및 기타": [
+                "Init_Win_bytes_forward",
+                "Init_Win_bytes_backward",
+                "act_data_pkt_fwd",
+                "min_seg_size_forward"],
+            "활동 및 휴면 시간 관련": [
+                "Active Mean",
+                "Active Std",
+                "Active Max",
+                "Active Min",
+                "Idle Mean",
+                "Idle Std",
+                "Idle Max",
+                "Idle Min"],
+            "레이블": [
+                "Label"]  # 주요 칼럼
+            }
+        
+        # 선택된 카테고리에 따른 칼럼 리스트
+        if analysis_radio in columns_dict:
+            selected_columns = columns_dict[analysis_radio]
+            
+            # 선택된 칼럼에 대해 히스토그램과 박스플롯을 가로로 배치
+            for column in selected_columns:
+                st.subheader(f"{column} 분석")
+
+                # 가로로 두 개의 영역 배치
+                col1, col2 = st.columns(2)
+                
+                safe_column_name = re.sub(r'[<>:"/\\|?*]', '_', column) 
+
+                if column == 'Label':
+                    # 이미지 파일 경로
+                    col1_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_pie_chart.png")
+                    col2_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_bar_chart.png")
+                else:
+                    # 이미지 파일 경로
+                    col1_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_histogram.png")
+                    col2_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_boxplot.png")
+                
+                if os.path.exists(col1_image):
+                    with col1:
+                        st.image(col1_image, use_column_width=True)
+                else:
+                    with col1:
+                        st.write(f"'{col1_image}' 파일이 존재하지 않습니다.")
+                
+                
+                if os.path.exists(col2_image):
+                    with col2:
+                        st.image(col2_image, use_column_width=True)
+                else:
+                    with col2:
+                        st.write(f"'{col2_image}' 파일이 존재하지 않습니다.")
+
 
     # 데이터 탐색 탭
     with analysis_tabs[1]:
-        exploration_radio = st.radio("탐색 옵션 선택", ["결측치, 이상치", "상관관계"])
-        if exploration_radio == "결측치, 이상치":
-            st.subheader("결측치 탐지")
-            st.write("결측치 히트맵을 여기에 표시합니다.")
+        exploration_radio = st.radio("탐색 옵션 선택", ["음수 값", "상관관계"])
+        if exploration_radio == "음수 값":
+            st.subheader("음수 데이터 비율")
+            st.image("../results/figures/negative_data_ratio.png")
 
-            st.subheader("이상치 탐지")
-            st.write("Z-Score 기반 시각화를 표시합니다.")
+            st.subheader("음수 값 상위 2개 칼럼")
+            st.image("../results/figures/negative_columns_top2.png")
+
+            st.subheader("음수 값 칼럼2")
+            st.image("../results/figures/negative_columns_rest.png")
 
         elif exploration_radio == "상관관계":
-            st.subheader("상관 행렬")
-            st.write("상관 행렬 및 클러스터 맵을 표시합니다.")
+            st.subheader("상관계수 절대값 기준 상위 30개")
+            st.image("../results/figures/corr.png")
+
+            st.subheader("상관계수 0.9이상 네트워크 그래프")
+            st.image("../results/figures/corr_network.png")
 
     # 데이터 전처리 탭
     with analysis_tabs[2]:
-        preprocessing_radio = st.radio("전처리 옵션 선택", ["제거된 칼럼/데이터", "스케일링 및 차원 축소", "샘플링 (UDBB)"])
-        if preprocessing_radio == "제거된 칼럼/데이터":
+        preprocessing_radio = st.radio("전처리 옵션 선택", ["제거된 칼럼", "제거된 데이터"])
+        if preprocessing_radio == "제거된 칼럼":
+            st.subheader("제거된 칼럼")
+            st.image("../results/figures/col_drop.png")
+            st.markdown("#### 단 하나의 값으로만 이루어진 칼럼 제거")
+            st.code(body="""
+                    # 단 하나의 값으로만 이루어진 칼럼 찾기
+                    single_value_columns = [col for col in df.columns if df[col].nunique() == 1]
+                    df_cleaned = df.drop(columns=single_value_columns)
+                    """, language="python")
+            
+            single_value_colums = ['Bwd PSH Flags', 'Bwd URG Flags', 'Fwd Avg Bytes/Bulk', 'Fwd Avg Packets/Bulk', 'Fwd Avg Bulk Rate', 'Bwd Avg Bytes/Bulk', 'Bwd Avg Packets/Bulk', 'Bwd Avg Bulk Rate']
+            df_single_value_colums = pd.DataFrame(single_value_colums, columns=["제거된 칼럼"])
+            st.write(df_single_value_colums)
+
+            st.markdown("#### 동일한 칼럼 제거")
+            st.code(body="""
+                    # 각 칼럼의 값을 tuple로 변환하여 비교
+                    grouped_columns = {}
+
+                    for col in df_cleaned.columns:
+                        col_values = tuple(df_cleaned[col].values)  # 각 칼럼의 값을 tuple로 변환
+                        if col_values in grouped_columns:  # 동일한 값이 이미 존재하는지 확인
+                            grouped_columns[col_values].append(col)  # 그룹에 추가
+                        else:
+                            grouped_columns[col_values] = [col]  # 새로운 그룹 생성
+
+                    # 그룹화된 칼럼 중 2개 이상 포함된 것만 추출
+                    grouped_result = [group for group in grouped_columns.values() if len(group) > 1]
+                    """, language="python")
+            
+            grouped_columns = [
+                ['Total Fwd Packets', 'Subflow Fwd Packets'],
+                ['Total Backward Packets', 'Subflow Bwd Packets'],
+                ['Fwd Packet Length Mean', 'Avg Fwd Segment Size'],
+                ['Bwd Packet Length Mean', 'Avg Bwd Segment Size'],
+                ['Fwd PSH Flags', 'SYN Flag Count'],
+                ['Fwd URG Flags', 'CWE Flag Count'],
+                ['Fwd Header Length', 'Fwd Header Length.1']
+            ]
+
+            # DataFrame 생성
+            df_grouped_columns = pd.DataFrame(grouped_columns, columns=["칼럼1", "제거된 칼럼1과 동일한 칼럼"])
+            st.write(df_grouped_columns)
+
+        elif preprocessing_radio == "제거된 데이터":
             st.subheader("제거된 데이터")
-            st.write("파이 차트를 표시합니다.")
+            st.markdown("#### 음수가 포함된 칼럼의 음수 데이터의 Label 칼럼 unique 값이 0 하나인 데이터 삭제")
+            st.code("""
+                    # 음수가 포함된 칼럼들 추출
+                    negative_columns = df.columns[df.min() < 0]
 
-        elif preprocessing_radio == "스케일링 및 차원 축소":
-            st.subheader("스케일링 전후 비교")
-            st.write("스케일링 전후의 분포를 비교합니다.")
+                    # 'Label' 칼럼의 unique 값이 0 하나인 음수가 포함된 칼럼 추출
+                    negative_columns_with_only_zero_label = [
+                    col for col in negative_columns
+                    if df[df[col] < 0]['Label'].nunique() == 1 
+                    and df[df[col] < 0]['Label'].unique()[0] == 0]
+                    """, language="python")
+            
+            negative_columns_with_only_zero_label = ['Flow Duration', 'Flow Bytes/s', 'Flow Packets/s', 'Flow IAT Mean', 'Flow IAT Max', 'Fwd Header Length', 'Bwd Header Length', 'Fwd Header Length.1', 'min_seg_size_forward']
+            df_negative_columns_with_only_zero_label = pd.DataFrame(negative_columns_with_only_zero_label, columns=["해당 칼럼의 음수 데이터 삭제"])
 
-        elif preprocessing_radio == "샘플링 (UDBB)":
-            st.subheader("샘플링 비율")
-            st.write("샘플 수 비율 바 차트를 표시합니다.")
+            st.write(df_negative_columns_with_only_zero_label)
+            st.text("제거된 데이터 수: 150 개")
 
 # 모델
 with pages[2]:
-    
     st.markdown("<h4>모델</h4>", unsafe_allow_html=True)
 
     # 서브탭 설정
@@ -229,14 +429,125 @@ with pages[2]:
 
     # 모델 성능 비교 탭
     with model_tabs[0]:
-        model_radio = st.radio("모델 선택", ["RF", "S + RF", "AE + RF", "AE + PCA + RF", "전체 모델 성능 비교"])
-        st.subheader(f"{model_radio} 성능")
-        st.write("성능 테이블 및 그래프를 표시합니다.")
+        df_models_scores = pd.read_csv("../results/reports/models_scores.csv", converters={
+            'Scaler': str,  # 'Scaler' 컬럼은 문자열로 처리
+            'PCA': str       # 'PCA' 컬럼도 문자열로 처리
+        })
+        
+        # 모델 타입 선택 (이진/다중 분류)
+        model_type = st.radio("모델 타입 선택", ["Binary", "Multi"])
+        
+        if model_type == "Multi":
+            # 다중 분류 모델에 대한 설정
+            st.subheader("다중 분류 모델 필터링")
+            
+            # 스케일러 버튼 (None, MinMax, Standard)
+            scaler_type = st.radio("스케일러 선택", ['None', 'MinMaxScaler()', 'StandardScaler()'], index=0)
 
+            # PCA 버튼 (None, 분산 0.99, 주성분 10)
+            pca_type = st.radio("PCA 선택", ['None', '0.99', '10'], index=0)
+            
+            # 다중 분류 모델 필터링 (Type이 Multi인 모델만)
+            multi_models = df_models_scores[df_models_scores['Type'] == "multiclass"]
+
+            # 다중 분류 모델을 다중 선택할 수 있게 하기
+            selected_models = st.multiselect("다중 분류 모델 선택", multi_models['Model'].unique(), default=multi_models['Model'].unique())
+            
+            # 선택된 모델에 맞게 필터링
+            filtered_data = df_models_scores[
+                (df_models_scores['Type'] == "multiclass") &
+                (df_models_scores['Scaler'] == str(scaler_type)) &
+                (df_models_scores['PCA'] == str(pca_type)) &
+                (df_models_scores['Model'].isin(selected_models))
+            ]
+            
+            # 성능 지표 4개 (Accuracy, F1 Score, MSE, R2)를 꺾은선 그래프로 시각화
+            if not filtered_data.empty:
+                st.subheader(f"성능 지표 (모델: {', '.join(selected_models)})")
+                metrics = ['Accuracy', 'F1 Score', 'R2', 'MSE']
+                
+                plt.figure(figsize=(12, 6))
+                
+                # 각 모델에 대해 성능 지표를 꺾은선 그래프로 그리기
+                for model in selected_models:
+                    model_data = filtered_data[filtered_data['Model'] == model]
+                    sns.lineplot(x='Metric', y='Value', data=model_data.melt(id_vars=["Model"], value_vars=metrics, var_name="Metric", value_name="Value"), label=model)
+                
+                plt.title(f"다중 분류 모델 성능 비교 (스케일러: {scaler_type}, PCA: {pca_type})")
+                plt.xlabel('성능 지표')
+                plt.ylabel('성능 값')
+                plt.legend(title='모델', bbox_to_anchor=(1.05, 1), loc='upper left')
+                st.pyplot(plt)
+
+            else:
+                st.write("선택한 조건에 맞는 모델이 없습니다.")
+        
+        elif model_type == "Binary":
+            # 이진 분류 모델에 대한 설정
+            st.subheader("이진 분류 모델 필터링")
+            
+            # 이진 분류 모델 필터링 (Type이 Binary인 모델만)
+            binary_models = df_models_scores[df_models_scores['Type'] == "binary"]
+
+            # 선택된 모델에 맞게 필터링
+            filtered_data = df_models_scores[
+                (df_models_scores['Type'] == "binary") &
+                (df_models_scores['Scaler'] == "StandardScaler()") &
+                (df_models_scores['PCA'] == str(None))
+            ]
+            
+            # 성능 지표 4개 (Accuracy, F1 Score, MSE, R2)를 꺾은선 그래프로 시각화
+            if not filtered_data.empty:
+                st.markdown('#### 스케일러: StandardScaler(), PCA: None)')
+                
+                # 데이터 변형 (melt로 성능 지표를 길게 변환)
+                filtered_data_melted = filtered_data.melt(id_vars=["Model"], value_vars=['Accuracy', 'F1 Score', 'R2', 'MSE'],
+                                                          var_name="Metric", value_name="Value")
+                
+                # 성능 지표를 꺾은선 그래프로 그리기
+                plt.figure(figsize=(12, 6))
+                sns.lineplot(x="Metric", y="Value", hue="Model", data=filtered_data_melted, marker='o')
+                
+                plt.title(f"이진 분류 모델 성능 비교")
+                plt.xlabel('성능 지표')
+                plt.ylabel('값')
+                plt.legend(title='모델', bbox_to_anchor=(1.05, 1), loc='upper left')
+                st.pyplot(plt)
+            
     # 최종 모델 탭
     with model_tabs[1]:
         st.subheader("최종 모델 성능")
-        st.write("성능 지표 및 ROC 곡선을 표시합니다.")
+        # 최종 모델 성능을 찾기
+        best_model = df_models_scores[(df_models_scores['Model'] == 'xgb') & 
+                                    (df_models_scores['Scaler'] == 'None') & 
+                                    (df_models_scores['PCA'] == 'None')]
+
+        # 성능 지표
+        accuracy = best_model['Accuracy'].values[0]
+        f1_score = best_model['F1 Score'].values[0]
+        mse = best_model['MSE'].values[0]
+        r2 = best_model['R2'].values[0]
+
+        # 성능 지표를 시각화
+        fig, ax = plt.subplots()
+        metrics = ['Accuracy', 'F1 Score', 'R2', 'MSE']
+        values = [accuracy, f1_score, r2, mse]
+
+        ax.bar(metrics, values, color=['blue', 'green', 'orange', 'red'])
+        ax.set_ylabel('Score')
+        ax.set_title('Model Performance Metrics')
+        st.pyplot(fig)
+
+        # classification_report 파일 경로
+        report_path = "../results/reports/xgb_scaler_None_pca_None_report.txt"
+
+        # classification_report 읽기
+        with open(report_path, "r") as f:
+            report_content = f.read()
+
+        # classification_report를 Streamlit에 표시
+        st.subheader("Classification Report")
+        st.text(report_content)
 
 # 보고서
 with pages[3]:
