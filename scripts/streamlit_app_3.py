@@ -73,9 +73,9 @@ if page == "메인 페이지":
         # 변수 유효/누락 데이터 통계 요약
         variable_stats = pd.DataFrame({
             "Variable": ["Destination Port", "Flow Duration", "Packet Length Mean", "IAT Mean", "Label"], # 변수
-            "Valid Data Count": [0, 0, 0, 0], # 유효 데이터 수
-            "Missing Data Count": [0, 0, 0, 0], # 누락 데이터 수 
-            "Missing Data Percentage (%)": [0, 0, 0, 0] # 누락 데이터 비율(%)
+            "Valid Data Count": [0, 0, 0, 0, 0], # 유효 데이터 수
+            "Missing Data Count": [0, 0, 0, 0, 0], # 누락 데이터 수 
+            "Missing Data Percentage (%)": [0, 0, 0, 0, 0] # 누락 데이터 비율(%)
         })
 
         st.table(variable_stats)
