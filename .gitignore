@@ -1,3 +1,5 @@
 # 환경 변수 파일
 .env
 data/
+results/models/
+results/figures/

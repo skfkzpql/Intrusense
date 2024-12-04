@@ -39,7 +39,7 @@ with pages[0]:
         st.markdown("<h5>- 전통적 탐지기법말고 ai를 왜 활용해야할까?</h5>", unsafe_allow_html=True)
         st.info("💡실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세입니다.")
     # 이미지 삽입
-        st.image("개요.png", caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        st.image("../results/images/개요.png", caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
         st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("✔️ 네트워크 트래픽 기반 침입 탐지 모델을 만들기")
         st.info("✔️ 정확도 99% 이상에 모델을 만들기")
@@ -170,57 +170,7 @@ with pages[0]:
     # 전체 워크플로 다이어그램 탭
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
-        # 노드 이름 정의
-        node_labels = ['수집', '점검 및 탐색', '전처리 및 정제', '모델링 및 훈련', '평가', '배포', '테스트 데이터']
-
-        # 흐름 (간단한 방향성 연결 설정)
-        links = [
-            {'source': 0, 'target': 1, 'value': 1},  # 수집 -> 점검 및 탐색
-            {'source': 1, 'target': 2, 'value': 1},  # 점검 및 탐색 -> 전처리 및 정제
-            {'source': 2, 'target': 3, 'value': 1},  # 전처리 및 정제 -> 모델링 및 훈련
-            {'source': 3, 'target': 4, 'value': 1},  # 모델링 및 훈련 -> 평가
-            {'source': 4, 'target': 5, 'value': 1},  # 평가 -> 배포
-            {'source': 1, 'target': 6, 'value': 1},  # 점검 및 탐색 -> 테스트 데이터
-            {'source': 6, 'target': 4, 'value': 1},  # 테스트 데이터 -> 평가
-        ]
-
-        # 노드와 링크 데이터 정의
-        nodes = {
-            'label': node_labels,
-            'color': ['#68b3a3', '#ff8000', '#ffcc66', '#66b3ff', '#1f77b4', '#003366', '#00b3b3'],
-        }
-
-        # 링크에 대한 출발지, 도착지, 값 설정
-        link_sources = [link['source'] for link in links]
-        link_targets = [link['target'] for link in links]
-        link_values = [link['value'] for link in links]
-
-        # Sankey Diagram 그리기
-        fig = go.Figure(go.Sankey(
-            node=dict(
-                pad=15,
-                thickness=20,
-                line=dict(color="black", width=0.5),
-                color=nodes['color'],
-                label=nodes['label']
-            ),
-            link=dict(
-                source=link_sources,
-                target=link_targets,
-                value=link_values
-            )
-        ))
-
-        # 레이아웃 설정
-        fig.update_layout(
-
-            font_size=12,
-            height=600,
-            width=800
-        )
-
-        # Plotly 차트 표시
-        st.plotly_chart(fig)
+        st.image("../results/images/워크플로우.png")
 
 
 # 데이터 분석 및 탐색
