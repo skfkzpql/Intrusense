@@ -86,7 +86,19 @@ if page == "메인 페이지":
     # 전체 워크플로 다이어그램 탭
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
-        st.plotly_chart(go.Figure(), use_container_width=True)
+        st.plotly_chart(go.Figure(go.Sankey(
+            node=dict(
+                pad=15,  # 노드 간의 여백
+                thickness=20,  # 노드의 두께
+                line=dict(color="black", width=0.5),  # 노드의 테두리 색상과 두께
+                label=["데이터 수집", "데이터 전처리", "모델링", "모델 평가", "결과 분석"]  # 각 단계의 레이블
+            ),
+            link=dict(
+                source=[0, 1, 2, 3],  # 출발 노드
+                target=[1, 2, 3, 4],  # 도착 노드
+                value=[8, 4, 2, 3]  # 각 흐름의 크기
+            )
+        )), use_container_width=True)
 
 # 데이터 분석 및 탐색
 elif page == "데이터 분석 및 탐색":
