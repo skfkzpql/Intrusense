@@ -33,7 +33,7 @@ image_files = [
 ]
 
 # 한글 폰트 경로 설정
-font_path = get_file_path("fonts/BATANG.TTC", "scripts/fonts/BATANG.TTC")
+font_path = os.path.join(os.getcwd(), get_file_path("fonts", "scripts/fonts"), "BATANG.TTC")
 font_name = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font_name)
 
