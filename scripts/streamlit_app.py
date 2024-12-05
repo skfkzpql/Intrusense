@@ -8,15 +8,7 @@ import seaborn as sns
 import plotly.graph_objects as go
 from matplotlib import font_manager, rc
 
-# 한글 폰트 경로 설정
-# font_path = r"C:\Windows\Fonts\batang.ttc" 
-# font_name = font_manager.FontProperties(fname=font_path).get_name()
-rc('font', family='sans-serif')
-
-# 한글 폰트 적용 확인
-# print(f"설정된 폰트: {font_name}")
-
-def get_image_path(local_path: str, cloud_path: str) -> str:
+def get_file_path(local_path: str, cloud_path: str) -> str:
     #이미지 경로를 반환하는 함수.
     if os.path.exists(local_path):
         return local_path
@@ -39,6 +31,12 @@ image_files = [
     ("../results/reports/models_scores.csv", "results/reports/models_scores.csv"),
     ("../results/reports/xgb_scaler_None_pca_None_report.txt", "results/reports/xgb_scaler_None_pca_None_report.txt")
 ]
+
+# 한글 폰트 경로 설정
+font_path = os.path.join(os.getcwd(), get_file_path("fonts/BATANG.TTC", "scripts/fonts/BATANG.TTC"))
+font_name = font_manager.FontProperties(fname=font_path).get_name()
+rc('font', family=font_name)
+
 
 # 메인 페이지
 st.title("Intrusense")
@@ -79,7 +77,7 @@ with pages[0]:
         st.info("💡실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세입니다.")
         # 이미지 삽입
         local, cloud = image_files[0]
-        st.image(get_image_path(local, cloud), caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        st.image(get_file_path(local, cloud), caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
         st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("✔️ 네트워크 트래픽 기반 침입 탐지 모델을 만들기")
         st.info("✔️ 정확도 99% 이상에 모델을 만들기")
@@ -211,7 +209,7 @@ with pages[0]:
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
         local, cloud = image_files[1]
-        st.image(get_image_path(local, cloud))
+        st.image(get_file_path(local, cloud))
 
 
 # 데이터 분석 및 탐색
@@ -337,16 +335,16 @@ with pages[1]:
                 if column == 'Label':
                     # 이미지 파일 경로
                     local, cloud = image_files[2]
-                    col1_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_pie_chart.png"),
+                    col1_image = get_file_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_pie_chart.png"),
                                                 os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_pie_chart.png"))
-                    col2_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_bar_chart.png"),
+                    col2_image = get_file_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_bar_chart.png"),
                                                 os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_bar_chart.png"))
                 else:
                     # 이미지 파일 경로
                     local, cloud = image_files[2]
-                    col1_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_histogram.png"),
+                    col1_image = get_file_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_histogram.png"),
                                                 os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_histogram.png"))
-                    col2_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_boxplot.png"),
+                    col2_image = get_file_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_boxplot.png"),
                                                 os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_boxplot.png"))
                 
                 if os.path.exists(col1_image):
@@ -372,28 +370,28 @@ with pages[1]:
         if exploration_radio == "음수 값":
             st.subheader("음수 데이터 비율")
             local, cloud = image_files[3]
-            st.image(get_image_path(local, cloud))
+            st.image(get_file_path(local, cloud))
             # st.image("../results/figures/negative_data_ratio.png")
 
             st.subheader("음수 값 상위 2개 칼럼")
             local, cloud = image_files[4]
-            st.image(get_image_path(local, cloud))
+            st.image(get_file_path(local, cloud))
             # st.image("../results/figures/negative_columns_top2.png")
 
             st.subheader("음수 값 칼럼2")
             local, cloud = image_files[5]
-            st.image(get_image_path(local, cloud))
+            st.image(get_file_path(local, cloud))
             # st.image("../results/figures/negative_columns_rest.png")
 
         elif exploration_radio == "상관관계":
             st.subheader("상관계수 절대값 기준 상위 30개")
             local, cloud = image_files[6]
-            st.image(get_image_path(local, cloud))
+            st.image(get_file_path(local, cloud))
             # st.image("../results/figures/corr.png")
 
             st.subheader("상관계수 0.9이상 네트워크 그래프")
             local, cloud = image_files[7]
-            st.image(get_image_path(local, cloud))
+            st.image(get_file_path(local, cloud))
             # st.image("../results/figures/corr_network.png")
 
     # 데이터 전처리 탭
@@ -402,7 +400,7 @@ with pages[1]:
         if preprocessing_radio == "제거된 칼럼":
             st.subheader("제거된 칼럼")
             local, cloud = image_files[8]
-            st.image(get_image_path(local, cloud))
+            st.image(get_file_path(local, cloud))
             # st.image("../results/figures/col_drop.png")
             st.markdown("#### 단 하나의 값으로만 이루어진 칼럼 제거")
             st.code(body="""
@@ -475,7 +473,7 @@ with pages[2]:
     # 모델 성능 비교 탭
     with model_tabs[0]:
         local, cloud = image_files[9]
-        df_models_scores = pd.read_csv(get_image_path(local, cloud), converters={
+        df_models_scores = pd.read_csv(get_file_path(local, cloud), converters={
             'Scaler': str,  # 'Scaler' 컬럼은 문자열로 처리
             'PCA': str       # 'PCA' 컬럼도 문자열로 처리
         })
@@ -586,7 +584,7 @@ with pages[2]:
 
         # classification_report 파일 경로
         local, cloud = image_files[10]
-        report_path = get_image_path(local, cloud)
+        report_path = get_file_path(local, cloud)
         
 
         # classification_report 읽기
