@@ -35,7 +35,8 @@ image_files = [
     ("../results/figures/negative_columns_rest.png", "results/figures/negative_columns_rest.png"),
     ("../results/figures/corr.png", "results/figures/corr.png"),
     ("../results/figures/corr_network.png", "results/figures/corr_network.png"),
-    ("../results/figures/col_drop.png", "results/figures/col_drop.png")
+    ("../results/figures/col_drop.png", "results/figures/col_drop.png"),
+    ("../results/reports/models_scores.csv", "results/reports/models_scores.csv")
 ]
 
 # 메인 페이지
@@ -472,7 +473,8 @@ with pages[2]:
 
     # 모델 성능 비교 탭
     with model_tabs[0]:
-        df_models_scores = pd.read_csv("../results/reports/models_scores.csv", converters={
+        local, cloud = image_files[9]
+        df_models_scores = pd.read_csv(get_image_path(local, cloud), converters={
             'Scaler': str,  # 'Scaler' 컬럼은 문자열로 처리
             'PCA': str       # 'PCA' 컬럼도 문자열로 처리
         })
