@@ -32,12 +32,6 @@ image_files = [
     ("../results/reports/xgb_scaler_None_pca_None_report.txt", "results/reports/xgb_scaler_None_pca_None_report.txt")
 ]
 
-#한글 폰트 경로 설정
-font_path = os.path.join(os.getcwd(), get_file_path("fonts/malgun-gothic.ttf", "scripts/fonts/malgun-gothic.ttf"))
-font_name = font_manager.FontProperties(fname=font_path).get_name()
-rc('font', family=font_name)
-
-
 # 메인 페이지
 st.title("Intrusense")
 
@@ -517,10 +511,10 @@ with pages[2]:
                     model_data = filtered_data[filtered_data['Model'] == model]
                     sns.lineplot(x='Metric', y='Value', data=model_data.melt(id_vars=["Model"], value_vars=metrics, var_name="Metric", value_name="Value"), label=model)
                 
-                plt.title(f"다중 분류 모델 성능 비교 (스케일러: {scaler_type}, PCA: {pca_type})")
-                plt.xlabel('성능 지표')
-                plt.ylabel('성능 값')
-                plt.legend(title='모델', bbox_to_anchor=(1.05, 1), loc='upper left')
+                plt.title(f"Performance Comparison of Multiclass Classification Models (Scaler: {scaler_type}, PCA: {pca_type})")
+                plt.xlabel('Metrics')
+                plt.ylabel('Values')
+                plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
                 st.pyplot(plt)
 
             else:
@@ -552,10 +546,10 @@ with pages[2]:
                 plt.figure(figsize=(12, 6))
                 sns.lineplot(x="Metric", y="Value", hue="Model", data=filtered_data_melted, marker='o')
                 
-                plt.title(f"이진 분류 모델 성능 비교")
-                plt.xlabel('성능 지표')
-                plt.ylabel('값')
-                plt.legend(title='모델', bbox_to_anchor=(1.05, 1), loc='upper left')
+                plt.title(f"Performance Comparison of Binary Classification Models")
+                plt.xlabel('Metrics')
+                plt.ylabel('Values')
+                plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
                 st.pyplot(plt)
             
     # 최종 모델 탭
