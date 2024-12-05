@@ -15,8 +15,7 @@ rc('font', family='sans-serif')
 
 # 한글 폰트 적용 확인
 # print(f"설정된 폰트: {font_name}")
-current_dir = os.getcwd()
-image_path = os.path.join(current_dir, "results/images/개요.png")
+image_path = os.path.join("results", "images", "개요.png")
 
 # 메인 페이지
 st.title("Intrusense")
@@ -26,7 +25,12 @@ pages = st.tabs(["🏠메인 페이지", "🔍데이터 분석 및 탐색", "�
 # 메인 페이지
 with pages[0]:
     # 팀명 의미
-    st.image(image_path)
+    # 파일 존재 여부 확인
+    if not os.path.exists(image_path):
+        st.error(f"File not found: {image_path}")
+    else:
+        st.image(image_path, caption="AI 보안 시장 출처: 정보")
+        
     st.markdown("<h4>팀명 의미</h4>", unsafe_allow_html=True)
     st.markdown("""Intrusense**는 Intrusion(침입)+Sense(감각)의 합성어로, 사이버 침입을 감지**하겠다는 의미""")
 
