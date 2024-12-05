@@ -241,7 +241,7 @@ with pages[1]:
 
     # 데이터 분포 탭
     with analysis_tabs[0]:
-        analysis_radio = st.radio("데이터 분석 옵션 선택", [
+        analysis_radio = st.radio("데이터 분석 옵션", [
             "포트 및 트래픽량 관련", "패킷 길이 관련", "플래그 및 헤더 관련",
             "속도 및 비율 관련", "세그먼트 및 하위 플로우 관련",
             "시간 관련", "윈도우 크기 및 기타", "활동 및 휴면 시간 관련", "레이블"
@@ -344,7 +344,7 @@ with pages[1]:
             
             # 선택된 칼럼에 대해 히스토그램과 박스플롯을 가로로 배치
             for column in selected_columns:
-                st.subheader(f"{column} 분석")
+                st.markdown(f"<h4>{column} 분석</h4>", unsafe_allow_html=True)
 
                 # 가로로 두 개의 영역 배치
                 col1, col2 = st.columns(2)
@@ -384,40 +384,40 @@ with pages[1]:
 
     # 데이터 탐색 탭
     with analysis_tabs[1]:
-        exploration_radio = st.radio("탐색 옵션 선택", ["음수 값", "상관관계"])
+        exploration_radio = st.radio("탐색 옵션", ["음수 값", "상관관계"])
 
         if exploration_radio == "음수 값":
-            st.subheader("음수 데이터 비율")
+            st.markdown("<h4>음수 데이터 비율</h4>", unsafe_allow_html=True)
             local, cloud = image_files[3]
             st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/negative_data_ratio.png")
 
-            st.subheader("음수 값 상위 2개 칼럼")
+            st.markdown("<h4>음수 값 상위 2개 칼럼</h4>", unsafe_allow_html=True)
             local, cloud = image_files[4]
             st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/negative_columns_top2.png")
 
-            st.subheader("음수 값 칼럼2")
+            st.markdown("<h4>음수 값 칼럼2</h4>", unsafe_allow_html=True)
             local, cloud = image_files[5]
             st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/negative_columns_rest.png")
 
         elif exploration_radio == "상관관계":
-            st.subheader("상관계수 절대값 기준 상위 30개")
+            st.markdown("<h4>상관계수 절대값 기준 상위 30개</h4>", unsafe_allow_html=True)
             local, cloud = image_files[6]
             st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/corr.png")
 
-            st.subheader("상관계수 0.9이상 네트워크 그래프")
+            st.markdown("<h4>상관계수 0.9이상 네트워크 그래프</h4>", unsafe_allow_html=True)
             local, cloud = image_files[7]
             st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/corr_network.png")
 
     # 데이터 전처리 탭
     with analysis_tabs[2]:
-        preprocessing_radio = st.radio("전처리 옵션 선택", ["제거된 칼럼", "제거된 데이터"])
+        preprocessing_radio = st.radio("전처리 옵션", ["제거된 칼럼", "제거된 데이터"])
         if preprocessing_radio == "제거된 칼럼":
-            st.subheader("제거된 칼럼")
+            st.markdown("<h4>제거된 칼럼</h4>", unsafe_allow_html=True)
             local, cloud = image_files[8]
             st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/col_drop.png")
@@ -463,7 +463,7 @@ with pages[1]:
             st.write(df_grouped_columns)
 
         elif preprocessing_radio == "제거된 데이터":
-            st.subheader("제거된 데이터")
+            st.markdown("<h4>제거된 데이터</h4>", unsafe_allow_html=True)
             st.markdown("#### 음수가 포함된 칼럼의 음수 데이터의 Label 칼럼 unique 값이 0 하나인 데이터 삭제")
             st.code("""
                     # 음수가 포함된 칼럼들 추출
@@ -503,7 +503,7 @@ with pages[2]:
         
         if model_type == "Multi":
             # 다중 분류 모델에 대한 설정
-            st.subheader("다중 분류 모델 필터링")
+            st.markdown("<h4>다중 분류 모델 필터링</h4>", unsafe_allow_html=True)
             
             # 스케일러 버튼 (None, MinMax, Standard)
             scaler_type = st.radio("스케일러 선택", ['None', 'MinMaxScaler()', 'StandardScaler()'], index=0)
@@ -527,8 +527,7 @@ with pages[2]:
             
             # 성능 지표 2개 (Accuracy, F1 Score)를 막대 그래프로 시각화
             if not filtered_data.empty:
-                st.subheader(f"성능 지표 (모델: {', '.join(selected_models)})")
-                
+                st.markdown(f"<h4>성능 지표 (모델: {', '.join(selected_models)})</h4>", unsafe_allow_html=True)
                 # 데이터 변형 (melt로 성능 지표를 길게 변환)
                 filtered_data_melted = filtered_data.melt(
                     id_vars=["Model"], value_vars=metrics, 
@@ -560,8 +559,7 @@ with pages[2]:
     
         elif model_type == "Binary":
             # 이진 분류 모델에 대한 설정
-            st.subheader("이진 분류 모델 필터링")
-            
+            st.markdown("<h4>이진 분류 모델 필터링</h4>", unsafe_allow_html=True)
             # 이진 분류 모델 필터링 (Type이 Binary인 모델만)
             binary_models = df_models_scores[df_models_scores['Type'] == "binary"]
 
@@ -611,7 +609,7 @@ with pages[2]:
         })
 
         # 필터링 기능 추가
-        st.subheader("모델 성능 데이터 필터링")
+        st.markdown("<h4>모델 성능 데이터 필터링</h4>", unsafe_allow_html=True)
         
         # Type 필터링 (이진/다중 분류)
         model_type_filter = st.selectbox("모델 타입 선택", ["All", "binary", "multiclass"], index=0)
@@ -643,7 +641,7 @@ with pages[2]:
         
     # 최종 모델 탭
     with model_tabs[2]:
-        st.subheader("최종 모델 성능")
+        st.markdown("<h4>최종 모델 성능</h4>", unsafe_allow_html=True)
         st.markdown("<h5>xgb / scaler: None / pca: None", unsafe_allow_html=True)
         # 최종 모델 성능을 찾기
         best_model = df_models_scores[(df_models_scores['Model'] == 'xgb') & 
@@ -713,7 +711,7 @@ with pages[2]:
         df_report = df_report[['Class', 'Class_Label', 'Precision', 'Recall', 'F1-Score', 'Support']]
 
         # Streamlit에 출력
-        st.subheader("Classification Report")
+        st.markdown("<h4>Classification Report</h4>", unsafe_allow_html=True)
         st.dataframe(df_report)  # 데이터프레임 형태로 출력
 
 # 보고서
@@ -725,7 +723,7 @@ with pages[3]:
 
     # 첫 번째 서브탭 내용
     with report_tabs[0]:
-        st.subheader("추후 논의점")
+        st.markdown("<h4>추후 논의점</h4>", unsafe_allow_html=True)
         st.markdown("""
         - **소수 클래스의 표본 부족**: 특정 소수 클래스(10개 이하의 데이터)의 경우, 표본 수가 너무 적어 패턴 분석에 어려움이 있었습니다.
         - **데이터 편차로 인한 모델 편향**: 데이터의 편차로 인해 DDoS 쪽에 모델이 편향되어 Web Attack 및 SQL Attack과 같은 공격에 상대적으로 약한 성능을 보였습니다.
@@ -733,8 +731,21 @@ with pages[3]:
         - **시계열 데이터 추가**: 시계열 데이터를 추가하여, 모델의 성능 및 이상 탐지 능력을 개선할 필요가 있습니다.
         """)
 
-        st.subheader("회고 및 개선점")
-        st.markdown("""
-        - **아쉬웠던 점**: 2017년과 2018년의 데이터셋이 제공되었지만, 칼럼 구조의 차이로 인해 2018년 데이터를 검증용 데이터셋으로 활용할 수 없었습니다.
-        - **배운 점**: 팀원들과 함께 작업하면서 많은 것을 배웠습니다. 예를 들어, 동일한 데이터셋을 사용했음에도 불구하고 수치 차이가 발생하는 문제를 발견하고 해결하면서 데이터의 일관성을 유지하는 방법을 학습했습니다.
-        - **협업의 중요성**: Git을 활용한 협업을 통해 팀원 간 소통과 배려의 중요성을 깨달았습니다. 서로의 작업 내용을 공유하며 프로젝트를 성공적으로 진행할 수 있었습니다.""")
+        st.markdown("<h4>느낀점</h4>", unsafe_allow_html=True)
+        st.caption("""
+        CIC-IDS2017 데이터셋을 기반으로 네트워크 트래픽 데이터를 EDA한다는 것은 상상이상으로 많은 시간과 탐색이 필요했습니다.
+        낯선 데이터이기도 했지만 여러 칼럼들을 분할해보고 개인의 영역과 능력이 다른 팀원들과 소통하며 초보자인 저도 쉽게 따라갈 수 있었습니다.
+
+        처음에 속성,칼럼,열,변수 등을 통해 어떻게 생긴 것인지 확인하고 이후에 여러 속성 간의 관계를 상관 계수나 산점도 등으로 보고,
+        그 관계에서 파생 변수를 만들어보기도 하는 등 다함께 같은 방향을 보며 성장하는 과정에서 배우며 이해하며 하나하나 적용하는 소중한 시간이었습니다.
+        지라에서-계획과 할일을 체크하며 데이터 전처리 코드를 공유하며 돌려보며 깃허브,STEAMILIT 웹 구현과 같은 다양한 기술과 도구를 실질적으로 경험하게 되었습니다.
+        모델링 과정에서도 완벽하게는 아니지만 실제 구현 방법을 체득하며 자신감을 얻을 수 있었습니다.
+
+        어려운 부분이 있을 때 솔직하게 질문하고 도움을 요청하는 것이 문제를 빠르게 해결할 수 있었습니다.
+        팀원분들이 각자 맡은 역할을 충실히 수행하면서도 서로를 적극적으로 돕는 모습을 보며 협업의 진정한 의미도 매순간 느꼈습니다.
+        또한, 팀원 간의 서로에 대한 존중의 마음이 프로젝트 성공의 핵심임을 다시금 느꼈습니다.
+        팀원들의 피드백을 통해 미미하고 부족하지만, 제 작업을 포기하지 않고 개선하고 더욱 발전할 수 있었습니다.
+
+        결론적으로 이번 프로젝트는 저에게 AI와 데이터 분석의 기초를 탄탄히 다질 수 있는 기회가 되었습니다.
+        팀원분들의 성실함과 노력 덕분에 저희 첫 프로젝트가 성공적으로 마무리될 수 있었음에 정말 감사드립니다.
+        여러분 덕분에 정말 많은 것을 배웠고, 함께한 기간이 오래도록 소중히 기억될 것 같습니다. 감사합니다!""")
