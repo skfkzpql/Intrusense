@@ -15,7 +15,7 @@ rc('font', family='sans-serif')
 
 # 한글 폰트 적용 확인
 # print(f"설정된 폰트: {font_name}")
-image_path = os.path.join("results", "images", "개요.png")
+image_path = os.path.join("scripts", "images", "개요.png")
 
 # 메인 페이지
 st.title("Intrusense")
