@@ -48,7 +48,7 @@ def download_font(url, save_path):
         
 # 폰트 다운로드
 font_url = "https://github.com/JiAhLee903/Intrusense/tree/main/scripts/fonts/BATANG.TTC"  # 폰트 파일 URL
-font_path = os.path.join(get_file_path("fonts", "scripts/fonts"), "BATANG.TTC")
+font_path = os.path.join("scripts/fonts", "BATANG.TTC")
 download_font(font_url, font_path)
 font_name = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font_name)
