@@ -34,9 +34,16 @@ image_files = [
 ]
 
 #한글 폰트 경로 설정
-font_path = os.path.join(os.getcwd(), get_file_path("fonts", "scripts/fonts"), "BATANG.TTC")
+font_path = os.path.join(os.getcwd(), get_file_path("fonts", "scripts/fonts"), "malgun-gothic.ttf")
 font_name = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font_name)
+
+import matplotlib.font_manager as fm
+
+# 사용 가능한 폰트 목록 출력
+fonts = [f.name for f in fm.fontManager.ttflist]
+for font in fonts:
+    print(font)
 
 
 # 메인 페이지
