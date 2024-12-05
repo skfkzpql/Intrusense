@@ -36,7 +36,8 @@ image_files = [
     ("../results/figures/corr.png", "results/figures/corr.png"),
     ("../results/figures/corr_network.png", "results/figures/corr_network.png"),
     ("../results/figures/col_drop.png", "results/figures/col_drop.png"),
-    ("../results/reports/models_scores.csv", "results/reports/models_scores.csv")
+    ("../results/reports/models_scores.csv", "results/reports/models_scores.csv"),
+    ("../results/reports/xgb_scaler_None_pca_None_report.txt", "results/reports/xgb_scaler_None_pca_None_report.txt")
 ]
 
 # 메인 페이지
@@ -584,7 +585,9 @@ with pages[2]:
         st.pyplot(fig)
 
         # classification_report 파일 경로
-        report_path = "../results/reports/xgb_scaler_None_pca_None_report.txt"
+        local, cloud = image_files[10]
+        report_path = get_image_path(local, cloud)
+        
 
         # classification_report 읽기
         with open(report_path, "r") as f:
