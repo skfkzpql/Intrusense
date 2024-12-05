@@ -29,13 +29,11 @@ image_files = [
     ("../results/figures/corr_network.png", "results/figures/corr_network.png"),
     ("../results/figures/col_drop.png", "results/figures/col_drop.png"),
     ("../results/reports/models_scores.csv", "results/reports/models_scores.csv"),
-    ("../results/reports/xgb_scaler_None_pca_None_report.txt", "results/reports/xgb_scaler_None_pca_None_report.txt"),
-    ("fonts/malgun-gothic.ttf", "scripts/fonts/malgun-gothic.ttf")
+    ("../results/reports/xgb_scaler_None_pca_None_report.txt", "results/reports/xgb_scaler_None_pca_None_report.txt")
 ]
 
 #한글 폰트 경로 설정
-local_font, cloud_font = image_files[11]
-font_path = os.path.join(os.getcwd(), get_file_path(local_font, cloud_font))
+font_path = os.path.join(os.getcwd(), get_file_path("fonts/malgun-gothic.ttf", "scripts/fonts/malgun-gothic.ttf"))
 font_name = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font_name)
 
