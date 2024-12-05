@@ -193,9 +193,34 @@ with pages[0]:
         st.markdown("<h5>주요 컬럼</h5>", unsafe_allow_html=True)
         st.dataframe(columns_df)
         st.caption("""### 💡알고 가면 좋은 정보 3가지 ###
-        1. 패킷(Packet): 네트워크를 통해 전송되는 데이터의 단위입니다. 네트워크 패킷은 보통 헤더(송수신자 정보, 프로토콜 등의 메타 데이터 포함)와 페이로드(실제 전송할 데이터)를 포함합니다.
-    2. IAT (Inter-Arrival Time): 연속적인 패킷들 사이의 도착 시간 간격입니다. IAT는 네트워크 트래픽의 패턴을 분석할 때 사용되며, 예를 들어 DDoS 공격과 같은 비정상적인 트래픽 플로우를 감지하는데 도움을 줍니다.
-    3. 길이(Length): 패킷의 크기를 의미하며, 보통 바이트 단위로 측정됩니다. 패킷의 길이는 네트워크의 부하, 전송 속도, 그리고 사용된 프로토콜에 대한 정보를 제공할 수 있습니다.""")
+        1. 📦패킷(Packet): 
+        - 네트워크를 통해 전송되는 데이터 단위
+        - 헤더(송수신자 정보, 프로토콜 등의 메타 데이터)와 페이로드(실제 데이터)로 구성
+    2. ⏰IAT (Inter-Arrival Time)
+        - 연속적인 패킷 사이의 도착 시간 간격
+        - 네트워크 트래픽 패턴 분석에 사용
+        - DDoS 공격과 같은 비정상적인 트래픽 플로우 감지에 도움
+    3. 📏길이(Length)
+        - 패킷의 크기
+        - 보통 바이트 단위로 측정
+        - 네트워크 부하, 전송 속도, 사용된 프로토콜에 대한 정보 제공""")
+        # st.markdown("""
+        # ##### 💡알고 가면 좋은 정보 3가지 #####
+
+        # 1. 📦 **패킷(Packet)**: 
+        #     - 네트워크를 통해 전송되는 데이터 단위
+        #     - 헤더(송수신자 정보, 프로토콜 등의 메타 데이터)와 페이로드(실제 데이터)로 구성
+
+        # 2. ⏰ **IAT (Inter-Arrival Time)**: 
+        #     - 연속적인 패킷 사이의 도착 시간 간격
+        #     - 네트워크 트래픽 패턴 분석에 사용
+        #     - DDoS 공격과 같은 비정상적인 트래픽 플로우 감지에 도움
+
+        # 3. 📏 **길이(Length)**: 
+        #     - 패킷의 크기
+        #     - 보통 바이트 단위로 측정
+        #     - 네트워크 부하, 전송 속도, 사용된 프로토콜에 대한 정보 제공
+        # """)
         st.markdown("<h5>타겟 레이블</h5>", unsafe_allow_html=True)
         st.dataframe(target_labels_df)
 
@@ -665,8 +690,26 @@ with pages[2]:
                 precision, recall, f1_score, support = parts[1], parts[2], parts[3], parts[4]
                 data.append([class_name, precision, recall, f1_score, support])
 
-        # DataFrame 생성
+       # DataFrame 생성
         df_report = pd.DataFrame(data, columns=columns)
+
+        # 클래스 라벨 매핑
+        label_mapping = {
+            'BENIGN': 0, 'FTP-Patator': 1, 'SSH-Patator': 2, 'DoS slowloris': 3,
+            'DoS Slowhttptest': 4, 'DoS Hulk': 5, 'DoS GoldenEye': 6, 'Heartbleed': 7,
+            'Web Attack � Brute Force': 8, 'Web Attack � XSS': 9,
+            'Web Attack � Sql Injection': 10, 'Infiltration': 11, 'Bot': 12,
+            'PortScan': 13, 'DDoS': 14
+        }
+
+        # label_mapping을 반대로 변환 (0~14 -> 클래스 이름)
+        reverse_label_mapping = {str(v): k for k, v in label_mapping.items()}
+
+        # Class 값에 해당하는 label을 찾기 (Class가 숫자일 경우)
+        df_report['Class_Label'] = df_report['Class'].map(reverse_label_mapping)
+
+        # 칼럼 순서 변경: 'Class' 칼럼 뒤에 'Class_Label' 칼럼 위치
+        df_report = df_report[['Class', 'Class_Label', 'Precision', 'Recall', 'F1-Score', 'Support']]
 
         # Streamlit에 출력
         st.subheader("Classification Report")
