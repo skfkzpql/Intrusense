@@ -9,12 +9,12 @@ import plotly.graph_objects as go
 from matplotlib import font_manager, rc
 
 # 한글 폰트 경로 설정
-font_path = r"C:\Windows\Fonts\batang.ttc" 
-font_name = font_manager.FontProperties(fname=font_path).get_name()
-rc('font', family=font_name)
+# font_path = r"C:\Windows\Fonts\batang.ttc" 
+# font_name = font_manager.FontProperties(fname=font_path).get_name()
+rc('font', family='sans-serif')
 
 # 한글 폰트 적용 확인
-print(f"설정된 폰트: {font_name}")
+# print(f"설정된 폰트: {font_name}")
 
 # 메인 페이지
 st.title("Intrusense")
