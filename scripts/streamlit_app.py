@@ -77,7 +77,7 @@ with pages[0]:
         st.info("💡실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세입니다.")
         # 이미지 삽입
         local, cloud = image_files[0]
-        st.image(get_file_path(local, cloud), caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        st.image(get_file_path(local, cloud), caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)", use_container_width=True)
         st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("✔️ 네트워크 트래픽 기반 침입 탐지 모델을 만들기")
         st.info("✔️ 정확도 99% 이상에 모델을 만들기")
@@ -209,7 +209,7 @@ with pages[0]:
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
         local, cloud = image_files[1]
-        st.image(get_file_path(local, cloud))
+        st.image(get_file_path(local, cloud), use_container_width=True)
 
 
 # 데이터 분석 및 탐색
@@ -349,7 +349,7 @@ with pages[1]:
                 
                 if os.path.exists(col1_image):
                     with col1:
-                        st.image(col1_image, use_column_width=True)
+                        st.image(col1_image)
                 else:
                     with col1:
                         st.write(f"'{col1_image}' 파일이 존재하지 않습니다.")
@@ -357,7 +357,7 @@ with pages[1]:
                 
                 if os.path.exists(col2_image):
                     with col2:
-                        st.image(col2_image, use_column_width=True)
+                        st.image(col2_image)
                 else:
                     with col2:
                         st.write(f"'{col2_image}' 파일이 존재하지 않습니다.")
@@ -370,28 +370,28 @@ with pages[1]:
         if exploration_radio == "음수 값":
             st.subheader("음수 데이터 비율")
             local, cloud = image_files[3]
-            st.image(get_file_path(local, cloud))
+            st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/negative_data_ratio.png")
 
             st.subheader("음수 값 상위 2개 칼럼")
             local, cloud = image_files[4]
-            st.image(get_file_path(local, cloud))
+            st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/negative_columns_top2.png")
 
             st.subheader("음수 값 칼럼2")
             local, cloud = image_files[5]
-            st.image(get_file_path(local, cloud))
+            st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/negative_columns_rest.png")
 
         elif exploration_radio == "상관관계":
             st.subheader("상관계수 절대값 기준 상위 30개")
             local, cloud = image_files[6]
-            st.image(get_file_path(local, cloud))
+            st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/corr.png")
 
             st.subheader("상관계수 0.9이상 네트워크 그래프")
             local, cloud = image_files[7]
-            st.image(get_file_path(local, cloud))
+            st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/corr_network.png")
 
     # 데이터 전처리 탭
@@ -400,7 +400,7 @@ with pages[1]:
         if preprocessing_radio == "제거된 칼럼":
             st.subheader("제거된 칼럼")
             local, cloud = image_files[8]
-            st.image(get_file_path(local, cloud))
+            st.image(get_file_path(local, cloud), use_container_width=True)
             # st.image("../results/figures/col_drop.png")
             st.markdown("#### 단 하나의 값으로만 이루어진 칼럼 제거")
             st.code(body="""
