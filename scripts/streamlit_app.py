@@ -16,15 +16,6 @@ rc('font', family='sans-serif')
 # 한글 폰트 적용 확인
 # print(f"설정된 폰트: {font_name}")
 
-# 현재 작업 디렉토리 출력
-st.write(f"Current working directory: {os.getcwd()}")
-
-# images 폴더와 파일 존재 여부 확인
-for root, dirs, files in os.walk("."):
-    st.write(f"Directory: {root}")
-    for file in files:
-        st.write(f" - {file}")
-
 # 메인 페이지
 st.title("Intrusense")
 
