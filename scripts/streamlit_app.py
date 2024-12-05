@@ -459,12 +459,13 @@ with pages[1]:
 
 # 모델
 with pages[2]:
-    st.markdown("<h4>모델</h4>", unsafe_allow_html=True)
 
     # 서브탭 설정
-    model_tabs = st.tabs(["모델 성능 비교", "최종 모델"])
+    model_tabs = st.tabs(["성능 비교(그래프)", "성능 비교(표)", "최종 모델"])
 
-    # 모델 성능 비교 탭
+    # 성능 지표 (Accuracy, F1 Score)에 대해 막대 그래프 사용
+    metrics = ['Accuracy', 'F1 Score']  # R2와 MSE 제외
+
     with model_tabs[0]:
         local, cloud = image_files[9]
         df_models_scores = pd.read_csv(get_file_path(local, cloud), converters={
@@ -499,27 +500,39 @@ with pages[2]:
                 (df_models_scores['Model'].isin(selected_models))
             ]
             
-            # 성능 지표 4개 (Accuracy, F1 Score, MSE, R2)를 꺾은선 그래프로 시각화
+            # 성능 지표 2개 (Accuracy, F1 Score)를 막대 그래프로 시각화
             if not filtered_data.empty:
                 st.subheader(f"성능 지표 (모델: {', '.join(selected_models)})")
-                metrics = ['Accuracy', 'F1 Score', 'R2', 'MSE']
                 
+                # 데이터 변형 (melt로 성능 지표를 길게 변환)
+                filtered_data_melted = filtered_data.melt(
+                    id_vars=["Model"], value_vars=metrics, 
+                    var_name="Metric", value_name="Value"
+                )
+                
+                # 막대 그래프 그리기
                 plt.figure(figsize=(12, 6))
+                sns.barplot(x="Model", y="Value", hue="Metric", data=filtered_data_melted, dodge=True)
                 
-                # 각 모델에 대해 성능 지표를 꺾은선 그래프로 그리기
-                for model in selected_models:
-                    model_data = filtered_data[filtered_data['Model'] == model]
-                    sns.lineplot(x='Metric', y='Value', data=model_data.melt(id_vars=["Model"], value_vars=metrics, var_name="Metric", value_name="Value"), label=model)
+                # 값 표시 (각 막대의 중심에 위치하도록 조정)
+                for p in plt.gca().patches:
+                    # 막대의 높이와 x 위치 얻기
+                    height = p.get_height()
+                    x_position = p.get_x() + p.get_width() / 2
+                    
+                    # 값 표시
+                    plt.text(x_position, height, f'{height:.4f}', ha='center', va='bottom', fontsize=10)
                 
-                plt.title(f"Performance Comparison of Multiclass Classification Models (Scaler: {scaler_type}, PCA: {pca_type})")
-                plt.xlabel('Metrics')
-                plt.ylabel('Values')
-                plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
+                plt.title(f"Performance Comparison of Multiclass Classification Models (Scaler: {scaler_type}, PCA: {pca_type})", fontsize=16)
+                plt.xlabel('Models', fontsize=12)
+                plt.ylabel('Values', fontsize=12)
+                plt.legend(title='Metric', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=10)
+                plt.tight_layout()  # 레이아웃 자동 조정
                 st.pyplot(plt)
 
             else:
                 st.write("선택한 조건에 맞는 모델이 없습니다.")
-        
+    
         elif model_type == "Binary":
             # 이진 분류 모델에 대한 설정
             st.subheader("이진 분류 모델 필터링")
@@ -528,32 +541,83 @@ with pages[2]:
             binary_models = df_models_scores[df_models_scores['Type'] == "binary"]
 
             # 선택된 모델에 맞게 필터링
-            filtered_data = df_models_scores[
-                (df_models_scores['Type'] == "binary") &
-                (df_models_scores['Scaler'] == "StandardScaler()") &
+            filtered_data = df_models_scores[(
+                df_models_scores['Type'] == "binary") & 
+                (df_models_scores['Scaler'] == "StandardScaler()") & 
                 (df_models_scores['PCA'] == str(None))
             ]
             
-            # 성능 지표 4개 (Accuracy, F1 Score, MSE, R2)를 꺾은선 그래프로 시각화
+            # 성능 지표 2개 (Accuracy, F1 Score)를 막대 그래프로 시각화
             if not filtered_data.empty:
-                st.markdown('#### 스케일러: StandardScaler(), PCA: None)')
+                st.markdown('#### 스케일러: StandardScaler(), PCA: None')
                 
                 # 데이터 변형 (melt로 성능 지표를 길게 변환)
-                filtered_data_melted = filtered_data.melt(id_vars=["Model"], value_vars=['Accuracy', 'F1 Score', 'R2', 'MSE'],
-                                                          var_name="Metric", value_name="Value")
+                filtered_data_melted = filtered_data.melt(
+                    id_vars=["Model"], value_vars=['Accuracy', 'F1 Score'],  # R2와 MSE 제외
+                    var_name="Metric", value_name="Value"
+                )
                 
-                # 성능 지표를 꺾은선 그래프로 그리기
+                # 성능 지표를 막대 그래프로 그리기
                 plt.figure(figsize=(12, 6))
-                sns.lineplot(x="Metric", y="Value", hue="Model", data=filtered_data_melted, marker='o')
+                sns.barplot(x="Model", y="Value", hue="Metric", data=filtered_data_melted, dodge=True)
                 
-                plt.title(f"Performance Comparison of Binary Classification Models")
-                plt.xlabel('Metrics')
-                plt.ylabel('Values')
-                plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
+                # 값 표시
+                for p in plt.gca().patches:
+                    height = p.get_height()
+                    x_position = p.get_x() + p.get_width() / 2
+                    plt.text(x_position, height, f'{height:.4f}', ha='center', va='bottom', fontsize=10)
+                
+                plt.title("Performance Comparison of Binary Classification Models", fontsize=16)
+                plt.xlabel('Models', fontsize=12)
+                plt.ylabel('Values', fontsize=12)
+                plt.legend(title='Metric', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=10)
+                plt.tight_layout()  # 레이아웃 자동 조정
                 st.pyplot(plt)
-            
-    # 최종 모델 탭
+
+            else:
+                st.write("선택한 조건에 맞는 모델이 없습니다.")
+
+
     with model_tabs[1]:
+        local, cloud = image_files[9]
+        df_models_scores = pd.read_csv(get_file_path(local, cloud), converters={
+            'Scaler': str,  # 'Scaler' 컬럼은 문자열로 처리
+            'PCA': str       # 'PCA' 컬럼도 문자열로 처리
+        })
+
+        # 필터링 기능 추가
+        st.subheader("모델 성능 데이터 필터링")
+        
+        # Type 필터링 (이진/다중 분류)
+        model_type_filter = st.selectbox("모델 타입 선택", ["All", "binary", "multiclass"], index=0)
+        
+        # Scaler 필터링 (StandardScaler, MinMaxScaler, None)
+        scaler_filter = st.selectbox("스케일러 선택", ["All", "StandardScaler()", "MinMaxScaler()", "None"], index=0)
+        
+        # PCA 필터링 (None, 0.99, 10)
+        pca_filter = st.selectbox("PCA 선택", ["All", "None", "0.99", "10"], index=0)
+
+        # 모델 필터링 로직
+        filtered_df = df_models_scores
+
+        # 모델 타입 필터링
+        if model_type_filter != "All":
+            filtered_df = filtered_df[filtered_df['Type'] == model_type_filter]
+        
+        # Scaler 필터링
+        if scaler_filter != "All":
+            filtered_df = filtered_df[filtered_df['Scaler'] == scaler_filter]
+        
+        # PCA 필터링
+        if pca_filter != "All":
+            filtered_df = filtered_df[filtered_df['PCA'] == pca_filter]
+        
+        # 필터링된 데이터프레임 출력
+        st.write(f"Filtered Data ({len(filtered_df)} rows)")
+        st.dataframe(filtered_df)
+        
+    # 최종 모델 탭
+    with model_tabs[2]:
         st.subheader("최종 모델 성능")
         # 최종 모델 성능을 찾기
         best_model = df_models_scores[(df_models_scores['Model'] == 'xgb') & 
@@ -574,8 +638,12 @@ with pages[2]:
         ax.bar(metrics, values, color=['blue', 'green', 'orange', 'red'])
         ax.set_ylabel('Score')
         ax.set_title('Model Performance Metrics')
-        st.pyplot(fig)
 
+        # 각 막대 위에 값 표시
+        for i, value in enumerate(values):
+            ax.text(i, value + 0.01, f'{value:.4f}', ha='center', va='bottom', fontsize=12)
+
+        st.pyplot(fig)
         # classification_report 파일 경로
         local, cloud = image_files[10]
         report_path = get_file_path(local, cloud)
@@ -583,11 +651,26 @@ with pages[2]:
 
         # classification_report 읽기
         with open(report_path, "r") as f:
-            report_content = f.read()
+            report_content = f.readlines()
 
-        # classification_report를 Streamlit에 표시
+        # 클래스별 precision, recall, f1-score 정보를 리스트로 파싱
+        data = []
+        columns = ["Class", "Precision", "Recall", "F1-Score", "Support"]
+
+        # 3번째 줄부터 17번째 줄까지 파싱 (인덱스는 2부터 17까지)
+        for line in report_content[2:18]:  # 3번째 줄부터 17번째 줄까지
+            parts = line.split()
+            if len(parts) == 5:  # 각 줄에 5개의 값이 있으면
+                class_name = parts[0]
+                precision, recall, f1_score, support = parts[1], parts[2], parts[3], parts[4]
+                data.append([class_name, precision, recall, f1_score, support])
+
+        # DataFrame 생성
+        df_report = pd.DataFrame(data, columns=columns)
+
+        # Streamlit에 출력
         st.subheader("Classification Report")
-        st.text(report_content)
+        st.dataframe(df_report)  # 데이터프레임 형태로 출력
 
 # 보고서
 with pages[3]:
