@@ -191,11 +191,12 @@ with pages[0]:
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
         # 이미지 삽입
-        image_path = "images/워크플로우.png"
-        if os.path.exists(image_path):
-            st.image(image_path)
+        image_path_local = "images/워크플로우.png"
+        image_path_cloud = "scripts/images/워크플로우.png"
+        if os.path.exists(image_path_local):
+            st.image(image_path_local)
         else:
-            st.error(f"이미지 파일을 찾을 수 없습니다: {image_path}")
+            st.image(image_path_cloud)
 
 
 # 데이터 분석 및 탐색
