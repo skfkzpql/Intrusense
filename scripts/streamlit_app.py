@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
 from matplotlib import font_manager, rc
-import requests
 
 def get_file_path(local_path: str, cloud_path: str) -> str:
     #이미지 경로를 반환하는 함수.
@@ -34,7 +33,7 @@ image_files = [
 ]
 
 #한글 폰트 경로 설정
-font_path = os.path.join(os.getcwd(), get_file_path("fonts", "scripts/fonts"), "malgun-gothic.ttf")
+font_path = os.path.join(os.getcwd(), get_file_path("fonts/malgun-gothic.ttf", "scripts/fonts/malgun-gothic.ttf"))
 font_name = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font_name)
 
