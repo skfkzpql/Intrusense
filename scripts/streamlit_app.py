@@ -54,8 +54,8 @@ with pages[0]:
         st.markdown("<h5>- 전통적 탐지기법말고 ai를 왜 활용해야할까?</h5>", unsafe_allow_html=True)
         st.info("💡실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세입니다.")
     # 이미지 삽입
-        print("Current working directory:", os.getcwd())
-        st.image("images/개요.png", caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        image_path = os.path.abspath("images/개요.png")
+        st.image(image_path, caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
         st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("✔️ 네트워크 트래픽 기반 침입 탐지 모델을 만들기")
         st.info("✔️ 정확도 99% 이상에 모델을 만들기")
@@ -186,7 +186,8 @@ with pages[0]:
     # 전체 워크플로 다이어그램 탭
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
-        st.image("images/워크플로우.png")
+        image_path = os.path.abspath("images/워크플로우.png")
+        st.image(image_path)
 
 
 # 데이터 분석 및 탐색
