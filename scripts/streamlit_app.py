@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
 from matplotlib import font_manager, rc
+import requests
 
 def get_file_path(local_path: str, cloud_path: str) -> str:
     #이미지 경로를 반환하는 함수.
@@ -33,10 +34,24 @@ image_files = [
 ]
 
 # 한글 폰트 경로 설정
-font_path = os.path.join(os.getcwd(), get_file_path("fonts", "scripts/fonts"), "BATANG.TTC")
+# font_path = os.path.join(os.getcwd(), get_file_path("fonts", "scripts/fonts"), "BATANG.TTC")
+# font_name = font_manager.FontProperties(fname=font_path).get_name()
+# rc('font', family=font_name)
+
+def download_font(url, save_path):
+    if not os.path.exists(save_path):
+        print(f"Downloading font from {url}...")
+        response = requests.get(url)
+        with open(save_path, "wb") as f:
+            f.write(response.content)
+        print(f"Font downloaded to {save_path}")
+        
+# 폰트 다운로드
+font_url = "https://github.com/JiAhLee903/Intrusense/tree/main/scripts/fonts/BATANG.TTC"  # 폰트 파일 URL
+font_path = os.path.join(get_file_path("fonts", "scripts/fonts"), "BATANG.TTC")
+download_font(font_url, font_path)
 font_name = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font_name)
-
 
 # 메인 페이지
 st.title("Intrusense")
