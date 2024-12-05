@@ -16,6 +16,28 @@ rc('font', family='sans-serif')
 # 한글 폰트 적용 확인
 # print(f"설정된 폰트: {font_name}")
 
+def get_image_path(local_path: str, cloud_path: str) -> str:
+    #이미지 경로를 반환하는 함수.
+    if os.path.exists(local_path):
+        return local_path
+    elif os.path.exists(cloud_path):
+        return cloud_path
+    else:
+        raise FileNotFoundError(f"Neither '{local_path}' nor '{cloud_path}' exists.")
+
+# 이미지 경로 배열
+image_files = [
+    ("images/개요.png", "scripts/images/개요.png"),
+    ("images/워크플로우.png", "scripts/images/워크플로우.png"),
+    ("../results/figures", "results/figures"),
+    ("../results/figures/negative_data_ratio.png", "results/figures/negative_data_ratio.png"),
+    ("../results/figures/negative_columns_top2.png", "results/figures/negative_columns_top2.png"),
+    ("../results/figures/negative_columns_rest.png", "results/figures/negative_columns_rest.png"),
+    ("../results/figures/corr.png", "results/figures/corr.png"),
+    ("../results/figures/corr_network.png", "results/figures/corr_network.png"),
+    ("../results/figures/col_drop.png", "results/figures/col_drop.png")
+]
+
 # 메인 페이지
 st.title("Intrusense")
 
@@ -54,12 +76,8 @@ with pages[0]:
         st.markdown("<h5>- 전통적 탐지기법말고 ai를 왜 활용해야할까?</h5>", unsafe_allow_html=True)
         st.info("💡실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세입니다.")
         # 이미지 삽입
-        image_path_local = "images/개요.png"
-        image_path_cloud = "scripts/images/개요.png"
-        if os.path.exists(image_path_local):
-            st.image(image_path_local, caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
-        else:
-            st.image(image_path_cloud, caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        local, cloud = image_files[0]
+        st.image(get_image_path(local, cloud), caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
         st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("✔️ 네트워크 트래픽 기반 침입 탐지 모델을 만들기")
         st.info("✔️ 정확도 99% 이상에 모델을 만들기")
@@ -190,13 +208,8 @@ with pages[0]:
     # 전체 워크플로 다이어그램 탭
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
-        # 이미지 삽입
-        image_path_local = "images/워크플로우.png"
-        image_path_cloud = "scripts/images/워크플로우.png"
-        if os.path.exists(image_path_local):
-            st.image(image_path_local)
-        else:
-            st.image(image_path_cloud)
+        local, cloud = image_files[1]
+        st.image(get_image_path(local, cloud))
 
 
 # 데이터 분석 및 탐색
@@ -321,12 +334,18 @@ with pages[1]:
 
                 if column == 'Label':
                     # 이미지 파일 경로
-                    col1_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_pie_chart.png")
-                    col2_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_bar_chart.png")
+                    local, cloud = image_files[2]
+                    col1_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_pie_chart.png"),
+                                                os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_pie_chart.png"))
+                    col2_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_bar_chart.png"),
+                                                os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_bar_chart.png"))
                 else:
                     # 이미지 파일 경로
-                    col1_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_histogram.png")
-                    col2_image = os.path.join("../results/figures", f"{analysis_radio}_{safe_column_name}_boxplot.png")
+                    local, cloud = image_files[2]
+                    col1_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_histogram.png"),
+                                                os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_histogram.png"))
+                    col2_image = get_image_path(os.path.join(local, f"{analysis_radio}_{safe_column_name}_boxplot.png"),
+                                                os.path.join(cloud, f"{analysis_radio}_{safe_column_name}_boxplot.png"))
                 
                 if os.path.exists(col1_image):
                     with col1:
@@ -347,29 +366,42 @@ with pages[1]:
     # 데이터 탐색 탭
     with analysis_tabs[1]:
         exploration_radio = st.radio("탐색 옵션 선택", ["음수 값", "상관관계"])
+
         if exploration_radio == "음수 값":
             st.subheader("음수 데이터 비율")
-            st.image("../results/figures/negative_data_ratio.png")
+            local, cloud = image_files[3]
+            st.image(get_image_path(local, cloud))
+            # st.image("../results/figures/negative_data_ratio.png")
 
             st.subheader("음수 값 상위 2개 칼럼")
-            st.image("../results/figures/negative_columns_top2.png")
+            local, cloud = image_files[4]
+            st.image(get_image_path(local, cloud))
+            # st.image("../results/figures/negative_columns_top2.png")
 
             st.subheader("음수 값 칼럼2")
-            st.image("../results/figures/negative_columns_rest.png")
+            local, cloud = image_files[5]
+            st.image(get_image_path(local, cloud))
+            # st.image("../results/figures/negative_columns_rest.png")
 
         elif exploration_radio == "상관관계":
             st.subheader("상관계수 절대값 기준 상위 30개")
-            st.image("../results/figures/corr.png")
+            local, cloud = image_files[6]
+            st.image(get_image_path(local, cloud))
+            # st.image("../results/figures/corr.png")
 
             st.subheader("상관계수 0.9이상 네트워크 그래프")
-            st.image("../results/figures/corr_network.png")
+            local, cloud = image_files[7]
+            st.image(get_image_path(local, cloud))
+            # st.image("../results/figures/corr_network.png")
 
     # 데이터 전처리 탭
     with analysis_tabs[2]:
         preprocessing_radio = st.radio("전처리 옵션 선택", ["제거된 칼럼", "제거된 데이터"])
         if preprocessing_radio == "제거된 칼럼":
             st.subheader("제거된 칼럼")
-            st.image("../results/figures/col_drop.png")
+            local, cloud = image_files[8]
+            st.image(get_image_path(local, cloud))
+            # st.image("../results/figures/col_drop.png")
             st.markdown("#### 단 하나의 값으로만 이루어진 칼럼 제거")
             st.code(body="""
                     # 단 하나의 값으로만 이루어진 칼럼 찾기
