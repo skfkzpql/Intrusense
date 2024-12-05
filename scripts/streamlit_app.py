@@ -16,6 +16,15 @@ rc('font', family='sans-serif')
 # 한글 폰트 적용 확인
 # print(f"설정된 폰트: {font_name}")
 
+# 현재 작업 디렉토리 출력
+st.write(f"Current working directory: {os.getcwd()}")
+
+# images 폴더와 파일 존재 여부 확인
+for root, dirs, files in os.walk("."):
+    st.write(f"Directory: {root}")
+    for file in files:
+        st.write(f" - {file}")
+
 # 메인 페이지
 st.title("Intrusense")
 
@@ -53,9 +62,12 @@ with pages[0]:
         st.markdown('사이버 보안 위협이 점점 더 복잡하고 정교해짐에 따라, 효율적이고 신뢰성 있는 침입 탐지 시스템의 필요성이 강조되고 있습니다. 이에 우리 팀은 다양한 사이버 공격 유형을 포함한 현실적인 네트워크 데이터셋을 활용하여, 실제 환경에서도 높은 정확도를 보이는 머신러닝 딥러닝 기반의 침입 탐지 모델을 구축하고자 합니다.')
         st.markdown("<h5>- 전통적 탐지기법말고 ai를 왜 활용해야할까?</h5>", unsafe_allow_html=True)
         st.info("💡실제 ai 기반 보안 산업에 **정확도**와 **유연성**을 바탕으로하는 **AI 기반 솔루션**의 채택률 증가하는 추세입니다.")
-    # 이미지 삽입
-        image_path = os.path.abspath("images/개요.png")
-        st.image(image_path, caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        # 이미지 삽입
+        image_path = "images/개요.png"
+        if os.path.exists(image_path):
+            st.image(image_path, caption="AI 보안 시장 출처: 정보통신신문 (https://www.koit.co.kr/news/articleView.html?idxno=126833)")
+        else:
+            st.error(f"이미지 파일을 찾을 수 없습니다: {image_path}")
         st.markdown("<h4>목적 및 목표</h4>", unsafe_allow_html=True)
         st.info("✔️ 네트워크 트래픽 기반 침입 탐지 모델을 만들기")
         st.info("✔️ 정확도 99% 이상에 모델을 만들기")
@@ -186,8 +198,12 @@ with pages[0]:
     # 전체 워크플로 다이어그램 탭
     with tabs[2]:
         st.markdown("<h4>단계별 프로세스</h4>", unsafe_allow_html=True)
-        image_path = os.path.abspath("images/워크플로우.png")
-        st.image(image_path)
+        # 이미지 삽입
+        image_path = "images/워크플로우.png"
+        if os.path.exists(image_path):
+            st.image(image_path)
+        else:
+            st.error(f"이미지 파일을 찾을 수 없습니다: {image_path}")
 
 
 # 데이터 분석 및 탐색
