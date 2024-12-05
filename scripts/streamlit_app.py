@@ -644,6 +644,7 @@ with pages[2]:
     # 최종 모델 탭
     with model_tabs[2]:
         st.subheader("최종 모델 성능")
+        st.markdown("<h5>xgb / scaler: None / pca: None", unsafe_allow_html=True)
         # 최종 모델 성능을 찾기
         best_model = df_models_scores[(df_models_scores['Model'] == 'xgb') & 
                                     (df_models_scores['Scaler'] == 'None') & 
